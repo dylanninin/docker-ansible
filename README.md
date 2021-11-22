@@ -1,5 +1,7 @@
 Ansible Docker Container
 
+![Workflow Status](https://github.com/dylanninin/docker-ansible/actions/workflows/docker.yml/badge.svg)
+
 based on Docker image: `python:3.9-slim`
 
 packages:
