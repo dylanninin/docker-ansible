@@ -1,0 +1,10 @@
+#!/usr/bin/env ansible-playbook
+#
+- name: example
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  tasks:
+    - name: debug
+      debug:
+        msg: "hello, ansible"

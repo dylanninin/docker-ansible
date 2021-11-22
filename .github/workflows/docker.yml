@@ -1,0 +1,49 @@
+name: Build Docker Image
+on:
+  push:
+    tags-ignore:
+      - '*'
+    branches:
+      - master
+
+jobs:
+  docker
+    name: build docker image
+    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Log in to Docker Hub
+      id: login-docker-hub
+      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Extract metadata for Docker
+      id: extract-metadata
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: dylanninin/ansible
+
+    - name: Build and push Docker image
+      id: build-and-push-image
+      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+#    - name: Notify on Slack
+#      uses: act10ns/slack@v1.2.2
+#      with:
+#        status: ${{ job.status }}
+#        channel: '#alert'
+#        steps: ${{ toJson(steps) }}
+#      if: failure()
